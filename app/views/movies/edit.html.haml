@@ -6,7 +6,10 @@
 
   = label :movie, :title, 'Title'
   = text_field :movie, 'title'
-
+  
+  = label :movie, :director, 'Director'
+  = text_field :movie, 'director'
+  
   = label :movie, :rating, 'Rating'
   = select :movie, :rating, ['G','PG','PG-13','R','NC-17']
 
@@ -14,3 +17,5 @@
   = date_select :movie, :release_date
 
   = submit_tag 'Update Movie Info'
+  
+
