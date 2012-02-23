@@ -19,12 +19,14 @@ class MoviesController < ApplicationController
 
     if params[:sort] != session[:sort]
       session[:sort] = sort
+      flash.keep
       redirect_to :sort => sort, :ratings => @selected_ratings and return
     end
 
     if params[:ratings] != session[:ratings] and @selected_ratings != {}
       session[:sort] = sort
       session[:ratings] = @selected_ratings
+      flash.keep
       redirect_to :sort => sort, :ratings => @selected_ratings and return
     end
     
@@ -41,7 +43,7 @@ class MoviesController < ApplicationController
 
   def create
     @movie = Movie.create!(params[:movie])
-    flash[:notice] = "#{@movie.title} was successfully created."
+    flash[:notice] = "'#{@movie.title}' has no director info"
     redirect_to movies_path
   end
 
@@ -64,11 +66,18 @@ class MoviesController < ApplicationController
   end
 
   def search_director 
-    @movie = Movie.find params[:id]
-    @movies = Movie.find_all_by_director(@movie.director)
-    #flash[:director] = "Movies directed by '#{params[:director]}'"
-    #render 'index' # movies_path
-   #  redirect_to movies_path
+
+    movie = Movie.find params[:id]
+    
+    
+    if(movie.director.blank?)
+      flash[:notice] = "'#{movie.title}' has no director info"
+      redirect_to movies_path
+    else
+      @movies = Movie.all_movies_by_same_director(movie)
+      render 'search_director'
+    end
+
   end
 
 end
